@@ -61,32 +61,46 @@ class Rules
   end
 end
 
-board = Board.new
-rules = Rules.new board
-
-players = [:X, :O].cycle
-
-current_player = players.next
-
-loop do
-  puts board.to_s
-  print "\n>> "
-  row, col = gets.split.map { |e| e.to_i }
-  puts
-
-  next unless rules.valid_move? row, col
-
-  board.move row, col, current_player
-
-  if rules.winner? row, col, current_player
-    puts "#{current_player} wins!"
-    exit
+class TicTacToe
+  def initialize
+    @board = Board.new
+    @rules = Rules.new @board
+    @players = [:X, :O].cycle
+    @current_player = @players.next
   end
 
-  if board.draw?
-    puts "It's a draw!"
-    exit
+  def play
+    loop do
+      puts @board.to_s
+      row, col = capture_move
+      #print "\n>> "
+      #row, col = gets.split.map { |e| e.to_i }
+      #puts
+
+      next unless @rules.valid_move? row, col
+
+      @board.move row, col, @current_player
+
+      if @rules.winner? row, col, @current_player
+        puts "#{@current_player} wins!"
+        exit
+      end
+
+      if @board.draw?
+        puts "It's a draw!"
+        exit
+      end
+
+      @current_player = @players.next
+    end
   end
 
-  current_player = players.next
+  def capture_move
+    print "\n>> "
+    row, col = gets.split.map { |e| e.to_i }
+    puts
+    [row, col]
+  end
 end
+
+TicTacToe.new.play
